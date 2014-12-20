@@ -1,7 +1,7 @@
 {
   "name": "run-in-browser",
   "version": "0.0.0",
-  "description": "A minimal implementation of a vdom that allows for quick server or client side rendering of svg's",
+  "description": "A simple script that will allow you to run code in a browser and then send back a payload of data.",
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && npm run servertest",
