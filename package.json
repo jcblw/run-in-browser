@@ -1,0 +1,35 @@
+{
+  "name": "run-in-browser",
+  "version": "0.0.0",
+  "description": "A minimal implementation of a vdom that allows for quick server or client side rendering of svg's",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint && npm run servertest",
+    "servertest": "faucet",
+    "lint": "jshint index.js",
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jcblw/run-in-browser"
+  },
+  "keywords": [
+    "browser",
+    "runner",
+    "communication",
+    "evented",
+    "browserify"
+  ],
+  "author": "Jacob Lowe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jcblw/run-in-browser/issues"
+  },
+  "homepage": "https://github.com/jcblw/run-in-browser",
+  "devDependencies": {
+    "browserify": "^6.3.2",
+    "faucet": "0.0.1",
+    "jshint": "^2.5.10",
+    "tape": "^3.0.3",
+    "tape-run": "^0.3.0"
+  }
+}
