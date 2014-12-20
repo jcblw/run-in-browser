@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run lint && npm run servertest",
     "servertest": "faucet",
-    "lint": "jshint index.js",
+    "lint": "jshint index.js"
   },
   "repository": {
     "type": "git",
@@ -31,5 +31,10 @@
     "jshint": "^2.5.10",
     "tape": "^3.0.3",
     "tape-run": "^0.3.0"
+  },
+  "dependencies": {
+    "browser-run": "^0.4.0",
+    "browserify": "^7.0.3",
+    "eventemitter2": "^0.4.14"
   }
 }
