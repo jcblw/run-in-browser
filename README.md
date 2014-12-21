@@ -1,7 +1,5 @@
 # Run in Browser
 
-> This is very alpha please come star, follow, or contrib if you are interested
-
 A simple script that will allow you to run code in a browser and then send back a payload of data.
 
 RunInBrowser is a function that is a constructor essentially creating a number of differnt run is browser instances each with their own server. It takes one argument a options object that will be passed to either the server created for messaging between browser windows or passed to `browser-launcher`.
@@ -28,6 +26,10 @@ Event emitter on method that listens for events from the browser.
 ## RunInBrowser::emit
 
 Send an event to the browser.
+
+## RunInBrowser::kill
+
+Kill the browser that is open.
 
 # In Browser
 
