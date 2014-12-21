@@ -1,4 +1,50 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var shoe = require( 'shoe' ),
+    through = require( 'through' ),
+    EventEmitter = require( 'eventemitter2' ).EventEmitter2,
+    utils = require( '../shared/utils' ),
+    stream = shoe( '/~SERVER' ),
+    emitter = new EventEmitter(),
+    ogEmit = emitter.emit
+
+window._SERVER_ = emitter
+
+console.log( 'client started' );
+
+emitter.emit = function ( ) {
+    var args = utils.makeArray( arguments )
+    if ( typeof args[ 0 ] === 'string' ) {
+        stream.write( JSON.stringify( args ) ); // this sends an event to the server
+        return
+    }
+    else if ( typeof args[ 0 ] === 'boolean' ) {
+        args.shift()
+        ogEmit.apply( emitter, args ); // this should trigger a normal event
+    }
+}
+
+function eventTransform( msg ) {
+    var data = utils.deserialize( msg )
+    if ( utils.isEvent( data ) ) {
+        data.unshift( true ) // added true to first param to send data out from normal emitter
+        emitter.emit.apply( emitter, data )
+    }
+    this.queue( msg )
+}
+
+stream.pipe( through( eventTransform ) )
+
+emitter.on( 'RUNCODE', function( code ) {
+    console.log( 'run code' );
+    var script = document.createElement( 'script' );
+
+    script.innerHTML = code;
+    document.body.appendChild( script );
+} );
+
+emitter.emit( 'connection' ); // emit connection to server
+
+},{"../shared/utils":32,"eventemitter2":28,"shoe":29,"through":31}],2:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -1052,7 +1098,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":2,"ieee754":3,"is-array":4}],2:[function(require,module,exports){
+},{"base64-js":3,"ieee754":4,"is-array":5}],3:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -1174,7 +1220,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -1260,7 +1306,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 
 /**
  * isArray
@@ -1295,7 +1341,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1598,7 +1644,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1623,12 +1669,12 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1716,7 +1762,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -2227,7 +2273,7 @@ process.chdir = function (dir) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2313,7 +2359,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2400,16 +2446,16 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":10,"./encode":11}],13:[function(require,module,exports){
+},{"./decode":11,"./encode":12}],14:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":14}],14:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":15}],15:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2502,7 +2548,7 @@ function forEach (xs, f) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_readable":16,"./_stream_writable":18,"_process":8,"core-util-is":19,"inherits":6}],15:[function(require,module,exports){
+},{"./_stream_readable":17,"./_stream_writable":19,"_process":9,"core-util-is":20,"inherits":7}],16:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2550,7 +2596,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./_stream_transform":17,"core-util-is":19,"inherits":6}],16:[function(require,module,exports){
+},{"./_stream_transform":18,"core-util-is":20,"inherits":7}],17:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3536,7 +3582,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require('_process'))
-},{"_process":8,"buffer":1,"core-util-is":19,"events":5,"inherits":6,"isarray":7,"stream":24,"string_decoder/":25}],17:[function(require,module,exports){
+},{"_process":9,"buffer":2,"core-util-is":20,"events":6,"inherits":7,"isarray":8,"stream":25,"string_decoder/":26}],18:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3748,7 +3794,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./_stream_duplex":14,"core-util-is":19,"inherits":6}],18:[function(require,module,exports){
+},{"./_stream_duplex":15,"core-util-is":20,"inherits":7}],19:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4138,7 +4184,7 @@ function endWritable(stream, state, cb) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_duplex":14,"_process":8,"buffer":1,"core-util-is":19,"inherits":6,"stream":24}],19:[function(require,module,exports){
+},{"./_stream_duplex":15,"_process":9,"buffer":2,"core-util-is":20,"inherits":7,"stream":25}],20:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4248,10 +4294,10 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":1}],20:[function(require,module,exports){
+},{"buffer":2}],21:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":15}],21:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":16}],22:[function(require,module,exports){
 var Stream = require('stream'); // hack to fix a circular dependency issue when used with browserify
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = Stream;
@@ -4261,13 +4307,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":14,"./lib/_stream_passthrough.js":15,"./lib/_stream_readable.js":16,"./lib/_stream_transform.js":17,"./lib/_stream_writable.js":18,"stream":24}],22:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":15,"./lib/_stream_passthrough.js":16,"./lib/_stream_readable.js":17,"./lib/_stream_transform.js":18,"./lib/_stream_writable.js":19,"stream":25}],23:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":17}],23:[function(require,module,exports){
+},{"./lib/_stream_transform.js":18}],24:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":18}],24:[function(require,module,exports){
+},{"./lib/_stream_writable.js":19}],25:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4396,7 +4442,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":5,"inherits":6,"readable-stream/duplex.js":13,"readable-stream/passthrough.js":20,"readable-stream/readable.js":21,"readable-stream/transform.js":22,"readable-stream/writable.js":23}],25:[function(require,module,exports){
+},{"events":6,"inherits":7,"readable-stream/duplex.js":14,"readable-stream/passthrough.js":21,"readable-stream/readable.js":22,"readable-stream/transform.js":23,"readable-stream/writable.js":24}],26:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4619,7 +4665,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":1}],26:[function(require,module,exports){
+},{"buffer":2}],27:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5328,50 +5374,7 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":9,"querystring":12}],27:[function(require,module,exports){
-var shoe = require( 'shoe' ),
-    through = require( 'through' ),
-    EventEmitter = require( 'eventemitter2' ).EventEmitter2,
-    utils = require( '../shared/utils' ),
-    stream = shoe( '/~SERVER' ),
-    emitter = new EventEmitter(),
-    ogEmit = emitter.emit
-
-window._SERVER_ = emitter
-
-emitter.emit = function ( ) {
-    var args = utils.makeArray( arguments )
-    if ( typeof args[ 0 ] === 'string' ) {
-        stream.write( JSON.stringify( args ) ); // this sends an event to the server
-        return
-    }
-    else if ( typeof args[ 0 ] === 'boolean' ) {
-        args.shift()
-        ogEmit.apply( emitter, args ); // this should trigger a normal event
-    }
-}
-
-function eventTransform( msg ) {
-    var data = utils.deserialize( msg )
-    if ( utils.isEvent( data ) ) {
-        data.unshift( true ) // added true to first param to send data out from normal emitter
-        emitter.emit.apply( emitter, data )
-    }
-    this.queue( msg )
-}
-
-stream.pipe( through( eventTransform ) )
-
-emitter.on( 'RUNCODE', function( code ) {
-    var script = document.createElement( 'script' );
-
-    script.innerHTML = code;
-    document.body.appendChild( script );
-} );
-
-emitter.emit( 'connection' ); // emit connection to server
-
-},{"../shared/utils":32,"eventemitter2":28,"shoe":29,"through":31}],28:[function(require,module,exports){
+},{"punycode":10,"querystring":13}],28:[function(require,module,exports){
 /*!
  * EventEmitter2
  * https://github.com/hij1nx/EventEmitter2
@@ -6011,7 +6014,7 @@ module.exports = function (u, cb) {
     return stream;
 };
 
-},{"sockjs-client":30,"stream":24,"url":26}],30:[function(require,module,exports){
+},{"sockjs-client":30,"stream":25,"url":27}],30:[function(require,module,exports){
 /* SockJS client, version 0.3.1.7.ga67f.dirty, http://sockjs.org, MIT License
 
 Copyright (c) 2011-2012 VMware, Inc.
@@ -8448,7 +8451,7 @@ function through (write, end, opts) {
 
 
 }).call(this,require('_process'))
-},{"_process":8,"stream":24}],32:[function(require,module,exports){
+},{"_process":9,"stream":25}],32:[function(require,module,exports){
 var deserialize =
 module.exports.deserialize = function ( msg ) {
     var ret
@@ -8472,4 +8475,4 @@ module.exports.isEvent = function ( msg ) {
     }
     return false
 }
-},{}]},{},[27]);
+},{}]},{},[1]);
