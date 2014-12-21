@@ -60,3 +60,11 @@ RunInBrowser.prototype._runScripts = function( ) {
     runCode = this.emit.bind( this, 'RUNCODE' )
     this.scripts.forEach( runCode )
 }
+
+RunInBrowser.prototype.kill = function( ) {
+
+    if( this.browser ) {
+        this.browser.kill( 'SIGKILL' )
+    }
+
+}
