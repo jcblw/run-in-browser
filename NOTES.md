@@ -4,4 +4,6 @@
 
 - Data transfer, It look like [ xws ]( https://github.com/substack/xhr-write-stream ) will be great for this, that is currently what browser-run uses. Some more investigation is need to see if it can support thing like blob data event though I dont know how that will work with our event patterns needed.
 
-- Writing scripts to page. I feel that the client script should accomidate this. Use the same messaging system as the one exposed to the user except have a special event that will evaluate code into a code block. 
+- Writing scripts to page. I feel that the client script should accomidate this. Use the same messaging system as the one exposed to the user except have a special event that will evaluate code into a code block.
+
+- use shoe

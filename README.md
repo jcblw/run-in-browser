@@ -1,6 +1,6 @@
 # Run in Browser
 
-> This is currently a shell of a repo
+> This is very alpha please come star, follow, or contrib if you are interested
 
 A simple script that will allow you to run code in a browser and then send back a payload of data.
 

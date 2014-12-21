@@ -1,6 +1,6 @@
 {
   "name": "run-in-browser",
-  "version": "0.0.0",
+  "version": "0.0.5",
   "description": "A simple script that will allow you to run code in a browser and then send back a payload of data.",
   "main": "index.js",
   "scripts": {
@@ -33,8 +33,13 @@
     "tape-run": "^0.3.0"
   },
   "dependencies": {
+    "browser-launcher": "^1.0.0",
     "browser-run": "^0.4.0",
     "browserify": "^7.0.3",
-    "eventemitter2": "^0.4.14"
+    "ecstatic": "^0.5.8",
+    "eventemitter2": "^0.4.14",
+    "merge": "^1.2.0",
+    "shoe": "0.0.15",
+    "through": "^2.3.6"
   }
 }

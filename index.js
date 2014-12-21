@@ -1,42 +1,40 @@
-var run = require( 'browser-run' ),
-    browserify = require( 'browserify' ),
-    EventEmitter2 = require('eventemitter2').EventEmitter2
+var browserify = require( 'browserify' ),
+    merge = require( 'merge' ),
+    EventEmitter2 = require('eventemitter2').EventEmitter2,
+    server = require( './src/server' );
 
 module.exports = RunInBrowser
 
 function RunInBrowser( opts ) {
+    
+    var options = merge( opts, { emitter : this } ),
+        setup = server( opts );
+
+    this._sock = setup.sock;
+    this.port = setup.port;
+    this.server = setup.server;
+    this.scripts = [];
     EventEmitter2.call( this, opts.events )
-    this.browser = run( opts );
-    this.browser.on( 'data', this._onData.bind( this ) );
-    if ( opts.output ) {
-        this.browser.pipe( opts.output );
-    }
+    this.on( 'connection', this._runScripts.bind( this ) );
 }
 
-RunInBrowser.prototype = Object.create( EventEmitter2.prototype, {
-    
-    require: function( entry ) {
-        browserify( process.cwd() + entry )
-            .require( './client/server.js', { expose: 'server' } )
-            .bundle()
-            .pipe( this.browser )
-    },
+RunInBrowser.prototype = Object.create( EventEmitter2.prototype );
 
-    _onData: function( data ) {
-        // convert data into an event data if data is in proper form
-        var _event
+RunInBrowser.prototype.require = function( entry ) {
+    var error = this.emit.bind( this, true, 'error' ),
+        pushScript = this.scripts.push.bind( this.scripts )
 
-        try {
-            _event = JSON.parse( data.toString( 'utf8' ) ) 
-        } catch ( e ) {
-            _event = null
-        }
+    browserify( process.cwd() + entry )
+        //.require( './client/server.js', { expose: 'server' } )
+        // need to revise this to access global var
+        .bundle( function( err, buf ) {
+            if ( err ) return error( err )
+            pushScript( buf.toString( 'utf8' ) )
+        } )
+}
 
-        if ( Array.isArray( _event ) && typeof _event[ 0 ] === 'string' ) {
-            this.emit.appy( this, _event );
-        }
-
-        // do nothing with data if it does not match event pattern
-    }
-
-});
+RunInBrowser.prototype._runScripts = function ( ) {
+    console.log( 'new connection' );
+    runCode = this.emit.bind( this, 'RUNCODE' );
+    this.scripts.forEach( runCode );
+}
