@@ -1,18 +1,19 @@
-var 
+var
 browserify = require( 'browserify' ),
 merge = require( 'merge' ),
 EventEmitter2 = require('eventemitter2').EventEmitter2,
 server = require( './src/server' ),
 exposify = require( 'exposify' ),
-launcher = require( './src/launcher' )
+launcher = require( './src/launcher' ),
+path = require( 'path' )
 
 exposify.config = { server: '_SERVER_' }
 
 module.exports = RunInBrowser
 
 function RunInBrowser( opts ) {
-    
-    var 
+
+    var
     options = merge( opts, { emitter : this } ),
     setup = server( opts )
 
@@ -28,7 +29,10 @@ RunInBrowser.prototype = Object.create( EventEmitter2.prototype )
 
 RunInBrowser.prototype.require = function( entry ) {
 
-    browserify( process.cwd() + '/' + entry )
+    var relativeDir = path.dirname( require.main.filename ),
+        file = path.resolve( relativeDir, entry );
+
+    browserify( file )
         .transform( exposify )
         .bundle( this._onBundle.bind( this ) )
 }
