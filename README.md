@@ -1,5 +1,7 @@
 # Run in Browser
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/jcblw/run-in-browser.svg)](https://greenkeeper.io/)
+
 A simple script that will allow you to run code in a browser and then send back a payload of data.
 
 RunInBrowser is a function that is a constructor essentially creating a number of differnt run is browser instances each with their own server. It takes one argument a options object that will be passed to either the server created for messaging between browser windows or passed to `browser-launcher`.
