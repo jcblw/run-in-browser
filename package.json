@@ -27,19 +27,19 @@
   },
   "homepage": "https://github.com/jcblw/run-in-browser",
   "devDependencies": {
-    "browserify": "^6.3.2",
+    "browserify": "^14.3.0",
     "faucet": "0.0.1",
     "jshint": "^2.5.10",
-    "tape": "^3.0.3",
-    "tape-run": "^0.3.0"
+    "tape": "^4.6.3",
+    "tape-run": "^3.0.0"
   },
   "dependencies": {
     "browser-launcher": "^1.0.0",
-    "browser-run": "^0.4.0",
-    "browserify": "^7.0.3",
-    "ecstatic": "^0.5.8",
-    "eventemitter2": "^0.4.14",
-    "exposify": "^0.2.0",
+    "browser-run": "^4.0.2",
+    "browserify": "^14.3.0",
+    "ecstatic": "^2.1.0",
+    "eventemitter2": "^4.1.0",
+    "exposify": "^0.5.0",
     "merge": "^1.2.0",
     "shoe": "0.0.15",
     "through": "^2.3.6"
